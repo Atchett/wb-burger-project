@@ -2,11 +2,11 @@ import React from "react";
 import classes from "./Burger.module.css";
 import BurgerIngredient from "./BurgerIngredients/BurgerIngredients";
 
-const burger = props => {
+const burger = (props) => {
   // Object.keys transforms into an array of keys
   let transformedIngredients = Object.keys(props.ingredients)
     // map executes a function on each element in the array
-    .map(igKey => {
+    .map((igKey) => {
       // creating an array with the number of each item
       return (
         [...Array(props.ingredients[igKey])]

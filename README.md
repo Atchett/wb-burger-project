@@ -1,1 +1,1 @@
-Demo project - the burger builder - Wes Bos - Udemy
+Demo project - the burger builder - Udemy

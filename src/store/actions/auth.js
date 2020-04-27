@@ -23,6 +23,8 @@ const authFail = (error) => {
 };
 
 export const logout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("expirationDate");
   return {
     type: actionTypes.AUTH_LOGOUT,
   };
@@ -52,12 +54,15 @@ export const auth = (email, password, isSignup) => {
     axios
       .post(url, authData)
       .then((response) => {
-        console.log(response);
+        const expirationDate = new Date(
+          new Date().getTime() + response.data.expiresIn * 1000
+        );
+        localStorage.setItem("token", response.data.idToken);
+        localStorage.setItem("expirationDate", expirationDate);
         dispatch(authSuccess(response.data.idToken, response.data.localId));
         dispatch(checkAuthTimeout(response.data.expiresIn));
       })
       .catch((err) => {
-        console.log(err);
         dispatch(authFail(err.response.data.error));
       });
   };
@@ -67,5 +72,45 @@ export const setAuthRedirectPath = (path) => {
   return {
     type: actionTypes.SET_AUTH_REDIRECT_PATH,
     path: path,
+  };
+};
+
+export const authCheckState = () => {
+  return (dispatch) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      dispatch(logout());
+    } else {
+      const expirationDate = new Date(localStorage.getItem("expirationDate"));
+      const currDate = new Date();
+      if (expirationDate > currDate) {
+        dispatch(authGetUserID(token, expirationDate));
+      } else {
+        dispatch(logout());
+      }
+    }
+  };
+};
+
+const authGetUserID = (token, expirationDate) => {
+  return (dispatch) => {
+    const authData = {
+      idToken: token,
+    };
+    const url = "/accounts:lookup?key=AIzaSyD1OHnmDmjsolSN4COv3dADp5MrZCcLLSw";
+    axios
+      .post(url, authData)
+      .then((response) => {
+        const userId = response.data.users[0].localId;
+        dispatch(authSuccess(token, userId));
+        dispatch(
+          checkAuthTimeout(
+            (expirationDate.getTime() - new Date().getTime()) / 1000
+          )
+        );
+      })
+      .catch((err) => {
+        dispatch(authFail(err));
+      });
   };
 };

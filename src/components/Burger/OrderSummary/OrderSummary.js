@@ -2,12 +2,6 @@ import React, { Fragment, Component } from "react";
 import Button from "../../UI/Button/Button";
 
 class OrderSummary extends Component {
-  // in for debugging
-  // could just be a functional component
-  componentDidUpdate() {
-    console.log("[Order Summary] DidUpdate");
-  }
-
   render() {
     const ingredientSummary = Object.keys(this.props.ingredients).map(
       (igKey) => {

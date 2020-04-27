@@ -3,10 +3,6 @@ import classes from "./Modal.module.css";
 import Backdrop from "../Backdrop/Backdrop";
 
 class Modal extends Component {
-  componentDidUpdate() {
-    console.log("[Modal] DidUpdate");
-  }
-
   // don't unnecessarily update the component
   shouldComponentUpdate(nextProps, nextState) {
     return (

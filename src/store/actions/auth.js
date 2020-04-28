@@ -38,6 +38,8 @@ const checkAuthTimeout = (expirationTime) => {
   };
 };
 
+const API_KEY = `${process.env.REACT_APP_API_KEY}`;
+
 export const auth = (email, password, isSignup) => {
   return (dispatch) => {
     dispatch(authStart());
@@ -46,10 +48,9 @@ export const auth = (email, password, isSignup) => {
       password: password,
       returnSecureToken: true,
     };
-    let url = "/accounts:signUp?key=AIzaSyD1OHnmDmjsolSN4COv3dADp5MrZCcLLSw";
+    let url = "/accounts:signUp?key=" + API_KEY;
     if (!isSignup) {
-      url =
-        "/accounts:signInWithPassword?key=AIzaSyD1OHnmDmjsolSN4COv3dADp5MrZCcLLSw";
+      url = "/accounts:signInWithPassword?key=" + API_KEY;
     }
     axios
       .post(url, authData)
